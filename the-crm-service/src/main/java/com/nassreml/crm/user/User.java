@@ -1,6 +1,5 @@
 package com.nassreml.crm.user;
 
-
 import javax.persistence.*;
 
 import java.util.Objects;
@@ -50,6 +49,18 @@ public class User {
 
     public boolean isAdmin() {
         return admin;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 
     @Override

@@ -2,7 +2,9 @@ package com.nassreml.crm.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,16 +18,36 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<User> getUsers(){
+    public List<User> getUsers() {
         return userRepository.findAll();
     }
 
-    public User createUser(final User user){
+    public void createUser(final User user) {
         Optional<User> userOptional = userRepository.findUserByUsername(user.getUsername());
-        if(userOptional.isPresent()){
+        if (userOptional.isPresent()) {
             throw new IllegalStateException("This username is already taken");
         }
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 
+    public void deleteUser(final Long userId) {
+        boolean userExists = userRepository.existsById(userId);
+        if (userExists) {
+            userRepository.deleteById(userId);
+        } else {
+            throw new IllegalStateException("The user with id " + userId + " doesn't exists");
+        }
+
+    }
+
+    @Transactional
+    public void updateUser(Long userId, String username, String password, boolean isAdmin) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (!userOptional.isPresent()) {
+            throw new IllegalStateException("The user with id " + userId + " doesn't exists");
+        }
+        if (username != null && username.length() > 0) {
+            userOptional.get().setUsername(username);
+        }
+    }
 }
