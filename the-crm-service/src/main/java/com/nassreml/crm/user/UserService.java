@@ -2,7 +2,6 @@ package com.nassreml.crm.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -41,13 +40,39 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUser(Long userId, String username, String password, boolean isAdmin) {
+    public void updateUser(final Long userId, final String username, final String password, final boolean isAdmin) {
         Optional<User> userOptional = userRepository.findById(userId);
         if (!userOptional.isPresent()) {
             throw new IllegalStateException("The user with id " + userId + " doesn't exists");
         }
-        if (username != null && username.length() > 0) {
-            userOptional.get().setUsername(username);
+
+        List<String> validationErrors = UserUtils.validateUsername(username);
+        if (username != null) {
+            if (validationErrors.size() == 0) {
+                userOptional.get().setUsername(username);
+            } else {
+                throw new IllegalStateException(validationErrors.get(0));
+            }
+        }
+
+        validationErrors.addAll(UserUtils.validatePassword(password));
+        if (password != null) {
+            if (validationErrors.size() == 0) {
+                userOptional.get().setPassword(password);
+            } else {
+                throw new IllegalStateException(validationErrors.get(0));
+            }
+        }
+    }
+
+    @Transactional
+    public void changeUserStatus(final Long userId, final boolean isAdmin) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (!userOptional.isPresent()) {
+            throw new IllegalStateException("The user with id " + userId + " doesn't exists");
+        }
+        if (userOptional.get().isAdmin() != isAdmin) {
+            userOptional.get().setAdmin(isAdmin);
         }
     }
 }

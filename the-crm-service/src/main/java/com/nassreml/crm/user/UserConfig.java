@@ -12,7 +12,7 @@ public class UserConfig {
     // Thats only for test LOCALLY
 
     @Bean
-    CommandLineRunner commandLineRunner(UserRepository userRepository){
+    CommandLineRunner commandLineRunner(UserRepository userRepository) {
         return args -> {
             User nassr = new User("Nassr", "1234", true);
             User osama = new User("Nassr1", "1234", false);

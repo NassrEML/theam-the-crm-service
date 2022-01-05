@@ -1,6 +1,7 @@
 package com.nassreml.crm.user;
 
-import org.hibernate.exception.ConstraintViolationException;
+import com.nassreml.crm.user.web.request.ChangeAdminRequest;
+import com.nassreml.crm.user.web.response.GenericWebResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,31 +34,56 @@ public class UserController {
         try {
             userService.createUser(user);
         } catch (IllegalStateException exception) {
-            return new ResponseEntity<>(exception.getMessage(), HttpStatus.CONFLICT);
+            return getWebResponse(exception, null, HttpStatus.CONFLICT);
         }
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        final String message = "User created";
+        return getWebResponse(null, message, HttpStatus.CREATED);
     }
 
     @PutMapping(path = "{userId}")
-    public void updateUser(@PathVariable("userId") Long userId,
-                           @RequestParam(required = false) String username,
-                           @RequestParam(required = false) String password,
-                           @RequestParam(required = false) boolean isAdmin) {
-        userService.updateUser(userId, username, password, isAdmin);
+    public ResponseEntity<?> updateUser(@PathVariable("userId") Long userId,
+                                        @RequestParam(required = false) String username,
+                                        @RequestParam(required = false) String password,
+                                        @RequestParam(required = false) boolean isAdmin) {
+        try {
+            userService.updateUser(userId, username, password, isAdmin);
+        } catch (IllegalStateException exception) {
+            return getWebResponse(exception, null, HttpStatus.CONFLICT);
+        }
+        final String message = "User with id " + userId + " updated";
+        return getWebResponse(null, message, HttpStatus.OK);
     }
 
     @DeleteMapping(path = "{userId}")
-    public ResponseEntity<?> deleteUser(@PathVariable("userId") Long userId) {
+    public ResponseEntity<GenericWebResponse> deleteUser(@PathVariable("userId") Long userId) {
         try {
             userService.deleteUser(userId);
         } catch (IllegalStateException exception) {
-            return new ResponseEntity<>(exception.getMessage(), HttpStatus.CONFLICT);
+            return getWebResponse(exception, null, HttpStatus.CONFLICT);
         }
-        return new ResponseEntity<>("User deleted", HttpStatus.OK);
+        final String message = "User with id " + userId + " deleted";
+        return getWebResponse(null, message, HttpStatus.OK);
     }
 
-    public void changeAdminStatus() {
-        throw new UnsupportedOperationException("This endpoint is not implemented");
+    @PutMapping
+    public ResponseEntity<GenericWebResponse> changeAdminStatus(@RequestBody ChangeAdminRequest request) {
+        try {
+            userService.changeUserStatus(request.getId(), request.isAdmin());
+        } catch (IllegalStateException exception) {
+            return getWebResponse(exception, null, HttpStatus.CONFLICT);
+        }
+        final String message = "User with id " + request.getId() + " updated";
+
+        return getWebResponse(null, message, HttpStatus.OK);
+    }
+
+    private ResponseEntity<GenericWebResponse> getWebResponse(final Exception ex,
+                                                              final String message,
+                                                              final HttpStatus status) {
+        if (ex != null) {
+            return new ResponseEntity<>(new GenericWebResponse(ex.getMessage()), status);
+        }
+        return new ResponseEntity<>(new GenericWebResponse(message), status);
     }
 
 }
