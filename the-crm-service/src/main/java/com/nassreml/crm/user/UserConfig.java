@@ -14,11 +14,11 @@ public class UserConfig {
     @Bean
     CommandLineRunner commandLineRunner(UserRepository userRepository) {
         return args -> {
-            User nassr = new User("Nassr", "1234", true);
-            User osama = new User("Nassr1", "1234", false);
+            User first = new User("FirstUser", "1234", true);
+            User second = new User("SecondUser", "1234", false);
 
             userRepository.saveAll(
-                    List.of(nassr, osama)
+                    List.of(first, second)
             );
 
         };
