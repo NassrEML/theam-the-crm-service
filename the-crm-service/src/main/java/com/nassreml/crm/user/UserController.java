@@ -2,6 +2,7 @@ package com.nassreml.crm.user;
 
 import com.nassreml.crm.user.web.request.ChangeAdminRequest;
 import com.nassreml.crm.user.web.response.GenericWebResponse;
+import com.nassreml.crm.user.web.response.ListUsersResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +22,9 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> listUsers() {
-        return new ResponseEntity<>(userService.getUsers(), HttpStatus.OK);
+    public ResponseEntity<ListUsersResponse> listUsers() {
+        final ListUsersResponse users = new ListUsersResponse(userService.getUsers());
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @PostMapping
