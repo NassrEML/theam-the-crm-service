@@ -1,21 +1,18 @@
 package com.nassreml.crm.customer.web.request;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 
 public class CreateCustomerRequest {
 
-    @NotNull
+    @Size(min = 2, max = 200, message = "firstName must be between 2 and 200 characters")
     private String firstName;
-    @NotNull
+    @Size(min = 2, max = 200, message = "surname must be between 2 and 200 characters")
     private String surname;
-    @NotNull
-    private String photo;
 
-    public CreateCustomerRequest(String firstName, String surname, String photo) {
+    public CreateCustomerRequest(final String firstName, final String surname) {
         this.firstName = firstName;
         this.surname = surname;
-        this.photo = photo;
     }
 
     public String getFirstName() {
@@ -24,9 +21,5 @@ public class CreateCustomerRequest {
 
     public String getSurname() {
         return surname;
-    }
-
-    public String getPhoto() {
-        return photo;
     }
 }
