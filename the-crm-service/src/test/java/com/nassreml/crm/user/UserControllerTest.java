@@ -1,5 +1,6 @@
 package com.nassreml.crm.user;
 
+import com.nassreml.crm.user.web.response.ListUsersResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,10 +28,10 @@ class UserControllerTest {
         when(userService.getUsers()).thenReturn(List.of(user));
 
         // When
-        ResponseEntity response = userController.listUsers();
+        ResponseEntity<ListUsersResponse> response = userController.listUsers();
 
         // Then
-        assertThat(((List)response.getBody()).get(0)).isEqualTo(user);
+        assertThat(response.getBody().getUsers().get(0)).isEqualTo(user);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
@@ -46,9 +47,5 @@ class UserControllerTest {
         // Then
         assertThat(((List)response.getBody()).size()).isEqualTo(0);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
-    @Test
-    void createUser() {
     }
 }
