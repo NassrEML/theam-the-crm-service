@@ -42,10 +42,10 @@ class UserControllerTest {
         when(userService.getUsers()).thenReturn(emptyList);
 
         // When
-        ResponseEntity response = userController.listUsers();
+        ResponseEntity<ListUsersResponse> response = userController.listUsers();
 
         // Then
-        assertThat(((List)response.getBody()).size()).isEqualTo(0);
+        assertThat(response.getBody().getUsers().size()).isEqualTo(0);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }

@@ -27,3 +27,6 @@ docker build -t postgresql .
 docker run -dp 5432:5432 postgresql
 ```
 ### Second run the Spring Application
+```bash
+mvn spring-boot:run
+```
