@@ -6,10 +6,12 @@ import com.nassreml.crm.user.web.response.ListUsersResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@PreAuthorize("authenticated")
 @RestController
 @RequestMapping(path = "api/v1/user")
 public class UserController {
@@ -21,12 +23,14 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<ListUsersResponse> listUsers() {
         final ListUsersResponse users = new ListUsersResponse(userService.getUsers());
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody User user) {
         final List<String> validationErrors = UserUtils.validateUser(user);
@@ -42,6 +46,7 @@ public class UserController {
         return getWebResponse(null, message, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(path = "{userId}")
     public ResponseEntity<?> updateUser(@PathVariable("userId") Long userId,
                                         @RequestParam(required = false) String username,
@@ -56,6 +61,7 @@ public class UserController {
         return getWebResponse(null, message, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(path = "{userId}")
     public ResponseEntity<GenericWebResponse> deleteUser(@PathVariable("userId") Long userId) {
         try {
@@ -67,6 +73,7 @@ public class UserController {
         return getWebResponse(null, message, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping
     public ResponseEntity<GenericWebResponse> changeAdminStatus(@RequestBody ChangeAdminRequest request) {
         try {

@@ -24,8 +24,8 @@ public class Customer {
     private String firstName;
     private String surname;
     private String photo;
-    private Long whoCreate;
-    private Long whoWasTheLastToModify;
+    private String whoCreate;
+    private String whoWasTheLastToModify;
 
     public Customer() {
     }
@@ -33,8 +33,8 @@ public class Customer {
     public Customer(final String firstName,
                     final String surname,
                     final String photo,
-                    final Long whoCreate,
-                    final Long whoWasTheLastToModify) {
+                    final String whoCreate,
+                    final String  whoWasTheLastToModify) {
         this.firstName = firstName;
         this.surname = surname;
         this.photo = photo;
@@ -58,11 +58,11 @@ public class Customer {
         return photo;
     }
 
-    public Long getWhoCreate() {
+    public String getWhoCreate() {
         return whoCreate;
     }
 
-    public Long getWhoWasTheLastToModify() {
+    public String getWhoWasTheLastToModify() {
         return whoWasTheLastToModify;
     }
 
@@ -76,6 +76,14 @@ public class Customer {
 
     public void setPhoto(String photo) {
         this.photo = photo;
+    }
+
+    public void setWhoCreate(String whoCreate) {
+        this.whoCreate = whoCreate;
+    }
+
+    public void setWhoWasTheLastToModify(String whoWasTheLastToModify) {
+        this.whoWasTheLastToModify = whoWasTheLastToModify;
     }
 
     @Override

@@ -34,10 +34,11 @@ public class CustomerService {
         return customer.get();
     }
 
-    public Customer createCustomer(final CreateCustomerRequest customerRequest) {
+    public Customer createCustomer(final CreateCustomerRequest customerRequest, final String username) {
         final Customer customer = new Customer();
         customer.setFirstName(customerRequest.getFirstName());
         customer.setSurname(customerRequest.getSurname());
+        customer.setWhoCreate(username);
         return customerRepository.save(customer);
     }
 
@@ -57,25 +58,28 @@ public class CustomerService {
     }
 
     @Transactional
-    public void updateCustomerUrl(final String url, final Long customerId) {
+    public void updateCustomerUrl(final String url, final Long customerId, final String username) {
         Optional<Customer> customerOptional = customerRepository.findById(customerId);
         customerOptional.get().setPhoto(url);
+        customerOptional.get().setWhoWasTheLastToModify(username);
     }
 
     @Transactional
-    public void deleteCustomerPhoto(final Long customerId) {
+    public void deleteCustomerPhoto(final Long customerId, final String username) {
         Optional<Customer> customerOptional = customerRepository.findById(customerId);
         customerOptional.get().setPhoto(null);
+        customerOptional.get().setWhoWasTheLastToModify(username);
     }
 
     @Transactional
-    public void updateCustomer(final Long customerId, final String firstName, final String surname) {
+    public void updateCustomer(final Long customerId, final String firstName, final String surname, final String username) {
         Optional<Customer> customer = customerRepository.findById(customerId);
         if (!customer.isPresent()) {
             throw new IllegalStateException("The customer with id " + customerId + " doesn't exists");
         }
         customer.get().setFirstName(firstName);
         customer.get().setSurname(surname);
+        customer.get().setWhoWasTheLastToModify(username);
     }
 
     public void deleteCustomer(final Long customerId) {
